@@ -1,0 +1,156 @@
+create keyspace students with replication = {'class':'SimpleStrategy','replication_factor':1 };
+DESCRIBE KEYSPACES;
+output:students  system_schema  system_auth  system  system_distributed  system_traces
+
+cqlsh> USE students;
+cqlsh:students> create table student_info( rollno int primary key,studname text,dateofjoining timestamp,lastexampercent double);
+cqlsh:students> describe tables;
+
+student_info
+
+cqlsh:students> begin batch
+            ... insert into student_info(rollno ,studname,dateofjoining,lastexampercent) values(1,'Micheal Storm','2012-03-29',69.6)
+            ... insert into student_info(rollno ,studname,dateofjoining,lastexampercent) values(2,'Stephen Fox','2013-02-27',72.5)
+            ... apply batch;
+cqlsh:students> select * from student_info;
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+---------------
+      1 | 2012-03-28 18:30:00.000000+0000 |            69.6 | Micheal Storm
+      2 | 2013-02-26 18:30:00.000000+0000 |            72.5 |   Stephen Fox
+
+(2 rows)
+cqlsh:students> update student_info SET studname= 'David Sheen' where rollno=2;
+cqlsh:students> select * from student_info;
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+---------------
+      1 | 2012-03-28 18:30:00.000000+0000 |            69.6 | Micheal Storm
+      2 | 2013-02-26 18:30:00.000000+0000 |            72.5 |   David Sheen
+cqlsh:students> delete from student_info where rollno=2;
+cqlsh:students> select * from student_info where rollno=2;
+
+ rollno | dateofjoining | lastexampercent | studname
+--------+---------------+-----------------+----------
+
+(0 rows)
+
+(2 rows)
+cqlsh:students> select * from student_info where rollno in (1,2,3);
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+---------------
+      1 | 2012-03-28 18:30:00.000000+0000 |            69.6 | Micheal Storm
+      2 | 2013-02-26 18:30:00.000000+0000 |            72.5 |   David Sheen
+
+(2 rows)
+cqlsh:students> create index on student_info(studname);cqlsh:students> delete from student_info where rollno=2;
+cqlsh:students> select * from student_info where rollno=2;
+
+ rollno | dateofjoining | lastexampercent | studname
+--------+---------------+-----------------+----------
+
+(0 rows)
+
+cqlsh:students> select * from student_info where studname='David Sheen';
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+-------------
+      2 | 2013-02-26 18:30:00.000000+0000 |            72.5 | David Sheen
+
+(1 rows)
+cqlsh:students> create index on student_info(lastexampercent);
+cqlsh:students> select rollno,lastexampercent from student_info limit 2;
+
+ rollno | lastexampercent
+--------+-----------------
+      1 |            69.6
+      2 |            72.5
+
+(2 rows)
+cqlsh:students> select rollno,studname as "name" from student_info;
+
+ rollno | name
+--------+---------------
+      1 | Micheal Storm
+      2 |   David Sheen
+
+(2 rows)
+cqlsh:students> update student_info set studname='gagan',lastexampercent=39 where rollno=2;
+cqlsh:students> select * from student_info;
+cqlsh:students> delete from student_info where rollno=2;
+cqlsh:students> select * from student_info where rollno=2;
+
+ rollno | dateofjoining | lastexampercent | studname
+--------+---------------+-----------------+----------
+
+(0 rows)
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+---------------
+      1 | 2012-03-28 18:30:00.000000+0000 |            69.6 | Micheal Storm
+      2 | 2013-02-26 18:30:00.000000+0000 |              39 |         gagan
+
+(2 rows)
+cqlsh:students> select rollno,lastexampercent,studname from student_info where rollno=2;
+
+ rollno | lastexampercent | studname
+--------+-----------------+----------
+      2 |              39 |    gagan
+
+(1 rows)
+cqlsh:students> delete lastexampercent from student_info where rollno=2;
+cqlsh:students> select * from student_info where rollno=2;
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+----------
+      2 | 2013-02-26 18:30:00.000000+0000 |            null |    gagan
+
+(1 rows)
+cqlsh:students> delete from student_info where rollno=2;
+cqlsh:students> select * from student_info where rollno=2;
+
+ rollno | dateofjoining | lastexampercent | studname
+--------+---------------+-----------------+----------
+
+(0 rows)
+cqlsh:students> create table project_details(
+            ... project_id int,
+            ... project_name text,
+            ... studname text,
+            ... rating double,
+            ... duration int,
+            ... primary key(project_id,project_name));
+cqlsh:students> begin batch
+            ... insert into project_details(project_id,project_name,studname,rating,duration) values(1,'MS-data-migration','Nikhilgowda',3.5,720);
+            ... insert into project_details(project_id,project_name,studname,rating,duration) values(2,'MS-data-warehouse','Nitish',4.5,1440);
+            ... insert into project_details(project_id,project_name,studname,rating,duration) values(3,'SAP-REPORTING','GAGAN',5,3000);
+            ... APPLY BATCH;
+cqlsh:students> SELECT * FROM PROJECT_DETAILS;
+
+ project_id | project_name      | duration | rating | studname
+------------+-------------------+----------+--------+-------------
+          1 | MS-data-migration |      720 |    3.5 | Nikhilgowda
+          2 | MS-data-warehouse |     1440 |    4.5 |      Nitish
+          3 |     SAP-REPORTING |     3000 |      5 |       GAGAN
+
+(3 rows)
+cqlsh:students> SELECT * FROM PROJECT_DETAILS WHERE PROJECT_ID=1;
+
+ project_id | project_name      | duration | rating | studname
+------------+-------------------+----------+--------+-------------
+          1 | MS-data-migration |      720 |    3.5 | Nikhilgowda
+
+(1 rows)
+cqlsh:students> paging off
+Disabled Query paging.
+cqlsh:students> SELECT * FROM PROJECT_DETAILS WHERE PROJECT_ID IN (1,2) order by project_name desc;
+
+ project_id | project_name      | duration | rating | studname
+------------+-------------------+----------+--------+-------------
+          2 | MS-data-warehouse |     1440 |    4.5 |      Nitish
+          1 | MS-data-migration |      720 |    3.5 | Nikhilgowda
+
+(2 rows)
+
+
