@@ -1,0 +1,114 @@
+mkgagan@gagan:~/Downloads/hadoop-3.2.1/sbin$ start-all.sh
+WARNING: Attempting to start all Apache Hadoop daemons as mkgagan in 10 seconds.
+WARNING: This is not a recommended production deployment configuration.
+WARNING: Use CTRL-C to abort.
+Starting namenodes on [localhost]
+Starting datanodes
+Starting secondary namenodes [gagan]
+Starting resourcemanager
+Starting nodemanagers
+mkgagan@gagan:~/Downloads/hadoop-3.2.1/sbin$ jps
+23219 DataNode
+23620 ResourceManager
+23416 SecondaryNameNode
+23082 NameNode
+23772 NodeManager
+24109 Jps
+mkgagan@gagan:~/Downloads/hadoop-3.2.1/sbin$ hdfs dfs -mkdir /input_dir
+mkgagan@gagan:~/Downloads/hadoop-3.2.1/sbin$ hdfs dfs -ls /
+Found 1 items
+drwxr-xr-x   - mkgagan supergroup          0 2021-04-26 14:42 /input_dir
+mkgagan@gagan:~/Downloads/hadoop-3.2.1/sbin$ cd ..
+mkgagan@gagan:~/Downloads/hadoop-3.2.1$ cd share/hadoop/mapreduce
+mkgagan@gagan:~/Downloads/hadoop-3.2.1/share/hadoop/mapreduce$ hdfs dfs -put ~/input.txt /input_dir/input.txt
+mkgagan@gagan:~/Downloads/hadoop-3.2.1/share/hadoop/mapreduce$ hdfs dfs -ls /
+Found 1 items
+drwxr-xr-x   - mkgagan supergroup          0 2021-04-26 14:51 /input_dir
+mkgagan@gagan:~/Downloads/hadoop-3.2.1/share/hadoop/mapreduce$ hadoop jar hadoop-mapreduce-examples-3.2.2.jar wordcount /input_dir /firstexampleout
+2021-04-26 15:09:14,411 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032
+2021-04-26 15:09:15,084 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/mkgagan/.staging/job_1619428350216_0001
+2021-04-26 15:09:15,542 INFO input.FileInputFormat: Total input files to process : 1
+2021-04-26 15:09:15,671 INFO mapreduce.JobSubmitter: number of splits:1
+2021-04-26 15:09:16,032 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1619428350216_0001
+2021-04-26 15:09:16,034 INFO mapreduce.JobSubmitter: Executing with tokens: []
+2021-04-26 15:09:16,416 INFO conf.Configuration: resource-types.xml not found
+2021-04-26 15:09:16,416 INFO resource.ResourceUtils: Unable to find 'resource-types.xml'.
+2021-04-26 15:09:17,026 INFO impl.YarnClientImpl: Submitted application application_1619428350216_0001
+2021-04-26 15:09:17,145 INFO mapreduce.Job: The url to track the job: http://gagan:8088/proxy/application_1619428350216_0001/
+2021-04-26 15:09:17,145 INFO mapreduce.Job: Running job: job_1619428350216_0001
+2021-04-26 15:09:29,447 INFO mapreduce.Job: Job job_1619428350216_0001 running in uber mode : false
+2021-04-26 15:09:29,450 INFO mapreduce.Job:  map 0% reduce 0%
+2021-04-26 15:09:36,574 INFO mapreduce.Job:  map 100% reduce 0%
+2021-04-26 15:09:42,637 INFO mapreduce.Job:  map 100% reduce 100%
+2021-04-26 15:09:43,672 INFO mapreduce.Job: Job job_1619428350216_0001 completed successfully
+2021-04-26 15:09:43,867 INFO mapreduce.Job: Counters: 54
+	File System Counters
+		FILE: Number of bytes read=50
+		FILE: Number of bytes written=470439
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=150
+		HDFS: Number of bytes written=28
+		HDFS: Number of read operations=8
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+		HDFS: Number of bytes read erasure-coded=0
+	Job Counters 
+		Launched map tasks=1
+		Launched reduce tasks=1
+		Data-local map tasks=1
+		Total time spent by all maps in occupied slots (ms)=4377
+		Total time spent by all reduces in occupied slots (ms)=4088
+		Total time spent by all map tasks (ms)=4377
+		Total time spent by all reduce tasks (ms)=4088
+		Total vcore-milliseconds taken by all map tasks=4377
+		Total vcore-milliseconds taken by all reduce tasks=4088
+		Total megabyte-milliseconds taken by all map tasks=4482048
+		Total megabyte-milliseconds taken by all reduce tasks=4186112
+	Map-Reduce Framework
+		Map input records=3
+		Map output records=9
+		Map output bytes=80
+		Map output materialized bytes=50
+		Input split bytes=106
+		Combine input records=9
+		Combine output records=4
+		Reduce input groups=4
+		Reduce shuffle bytes=50
+		Reduce input records=4
+		Reduce output records=4
+		Spilled Records=8
+		Shuffled Maps =1
+		Failed Shuffles=0
+		Merged Map outputs=1
+		GC time elapsed (ms)=155
+		CPU time spent (ms)=1100
+		Physical memory (bytes) snapshot=419672064
+		Virtual memory (bytes) snapshot=4968292352
+		Total committed heap usage (bytes)=344981504
+		Peak Map Physical memory (bytes)=261627904
+		Peak Map Virtual memory (bytes)=2479792128
+		Peak Reduce Physical memory (bytes)=158044160
+		Peak Reduce Virtual memory (bytes)=2488500224
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	File Input Format Counters 
+		Bytes Read=44
+	File Output Format Counters 
+		Bytes Written=28
+mkgagan@gagan:~/Downloads/hadoop-3.2.1/share/hadoop/mapreduce$ hdfs dfs -ls /firstexampleout
+Found 2 items
+-rw-r--r--   1 mkgagan supergroup          0 2021-04-26 15:09 /firstexampleout/_SUCCESS
+-rw-r--r--   1 mkgagan supergroup         28 2021-04-26 15:09 /firstexampleout/part-r-00000
+
+mkgagan@gagan:~/Downloads/hadoop-3.2.1/share/hadoop/mapreduce$ hdfs dfs -cat /firstexampleout/*
+Bear	2
+Car	3
+Deer	2
+River	2
