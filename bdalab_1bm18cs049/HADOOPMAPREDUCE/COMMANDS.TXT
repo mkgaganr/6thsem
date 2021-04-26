@@ -112,3 +112,8 @@ Bear	2
 Car	3
 Deer	2
 River	2
+mkgagan@gagan:~/Downloads/hadoop-3.2.1/share/hadoop/mapreduce$ hdfs dfs -cat /firstexampleout/part-r-00000
+Bear	2
+Car	3
+Deer	2
+River	2
